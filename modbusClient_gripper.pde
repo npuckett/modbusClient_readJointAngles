@@ -1,17 +1,17 @@
 
 
-import ModbusRTU.*;
+//import ModbusRTU.*;
 import de.re.easymodbus.exceptions.*;
 import de.re.easymodbus.modbusclient.*;
-import de.re.easymodbus.modbusclient.gui.*;
-import de.re.easymodbus.server.*;
-import de.re.easymodbus.server.gui.*;
+//import de.re.easymodbus.modbusclient.gui.*;
+//import de.re.easymodbus.server.*;
+//import de.re.easymodbus.server.gui.*;
 
 int totalJoints = 6;
 int jointAngleRads[] = new int[totalJoints];
 float jointAngleDeg[] = new float[totalJoints];
 int tcpPos[] = new int[3];
-int mousePos[] = new int[2];
+int mousePos[] = new int[3];
 
 
 ModbusClient modbusClient;
@@ -19,7 +19,7 @@ String robotIP = "192.168.1.100";
 
 void setup()
 {
-size(800,800);
+size(400,400);
 
   modbusClient = new ModbusClient(robotIP,502);
   connectClient();
@@ -27,11 +27,11 @@ size(800,800);
 
 void draw()
 {
-
+background(0);
   if(modbusClient.isConnected())
   {
-    readJoints();
-    readTCP();
+    //readJoints();
+    //readTCP();
     sendMouse();
   }
   else
@@ -39,6 +39,16 @@ void draw()
     println("not connected");
     connectClient();
   }
+
+//stroke(255);
+//fill(255);
+//line(width/2,0,width/2,height);
+
+//textAlign(CENTER,CENTER);
+//textSize(32);
+//text("Waypoint1",width/4,height/2);
+//text("Waypoint2",((width/4)*3),height/2);
+
 // readRegister();
 }
 void readTCP()
@@ -73,11 +83,13 @@ void readJoints()
 }
 void sendMouse()
 {
-  mousePos[0] = round(mouseX);
-  mousePos[1] = round(mouseY);
+  mousePos[0] = round(map(mouseX,0,width,0,100));  //128
+  mousePos[1] = round(mouseY);  //129
+  mousePos[2] = round(width/2); //130
+  println(mousePos[0]);
   try
   {
-    modbusClient.WriteMultipleRegisters(128, mousePos);
+    modbusClient.WriteMultipleRegisters(135, mousePos);
     
   }
   catch (Exception e)
@@ -97,4 +109,3 @@ void connectClient()
     println("NOPE!!");  
   }
 }
-
